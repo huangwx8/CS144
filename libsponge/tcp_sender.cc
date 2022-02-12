@@ -75,7 +75,10 @@ void TCPSender::fill_window() {
                 seg.header().fin = true;
             }
             
-            send_segment(seg);
+            if (seg.length_in_sequence_space() > 0) { // do not send empty packet
+                send_segment(seg);
+            }
+
         } while (window_size > bytes_in_flight() && !_stream.buffer_empty());
     }
 }
