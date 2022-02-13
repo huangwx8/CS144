@@ -7,8 +7,8 @@
 #include "wrapping_integers.hh"
 
 #include <functional>
-#include <queue>
 #include <map>
+#include <queue>
 
 //! \brief The "sender" part of a TCP implementation.
 
@@ -27,7 +27,7 @@ class TCPSender {
     //! retransmission timer for the connection
     unsigned int _initial_retransmission_timeout;
 
-    //! sender's time accumulated by tick() 
+    //! sender's time accumulated by tick()
     size_t _ms_since_first_tick{0};
 
     size_t _retransmission_timeout;
@@ -50,7 +50,7 @@ class TCPSender {
 
     void send_segment(TCPSegment seg);
 
-    inline bool fully_acknowledged(const TCPSegment& segment, const WrappingInt32 ackno);
+    inline bool fully_acknowledged(const TCPSegment &segment, const WrappingInt32 ackno);
 
   public:
     //! Initialize a TCPSender

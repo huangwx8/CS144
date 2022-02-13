@@ -47,8 +47,7 @@ void StreamReassembler::push_substring(const string &data, const size_t index, c
     if (index >= _offset) {
         data_index = 0;
         buf_index = index - _offset;
-    }
-    else {
+    } else {
         data_index = _offset - index;
         buf_index = 0;
     }

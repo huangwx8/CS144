@@ -6,12 +6,11 @@
 #include "tcp_sender.hh"
 #include "tcp_state.hh"
 
-enum class ETCPControlType
-{
-  Synchronous = 1,
-  Acknowledgement = 2,
-  KeepAlive = 3,
-  Reset = 4,
+enum class ETCPControlType {
+    Synchronous = 1,
+    Acknowledgement = 2,
+    KeepAlive = 3,
+    Reset = 4,
 };
 
 //! \brief A complete endpoint of a TCP connection
@@ -29,7 +28,7 @@ class TCPConnection {
     //! in case the remote TCPConnection doesn't know we've received its whole stream?
     bool _linger_after_streams_finish{true};
 
-    //! connection's time accumulated by tick() 
+    //! connection's time accumulated by tick()
     size_t _ms_since_first_tick{0};
 
     size_t _ms_last_segment_received{0};
@@ -37,7 +36,7 @@ class TCPConnection {
     size_t _time_since_last_segment_received{0};
 
     void send_control_segment(ETCPControlType Type);
-    
+
     void send_queued_segments();
 
     bool local_ended() const;

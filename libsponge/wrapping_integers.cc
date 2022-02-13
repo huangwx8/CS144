@@ -38,16 +38,13 @@ uint64_t unwrap(WrappingInt32 n, WrappingInt32 isn, uint64_t checkpoint) {
     if (x > low32) {
         if (x - low32 > (1ul << 31) && high32 > 0) {
             closest = (high32 - (1ul << 32)) | x;
-        }
-        else {
+        } else {
             closest = high32 | x;
         }
-    }
-    else {
+    } else {
         if (low32 - x > (1ul << 31)) {
             closest = (high32 + (1ul << 32)) | x;
-        }
-        else {
+        } else {
             closest = high32 | x;
         }
     }
