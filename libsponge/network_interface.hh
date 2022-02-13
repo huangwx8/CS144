@@ -7,6 +7,51 @@
 
 #include <optional>
 #include <queue>
+#include <unordered_map>
+#include <vector>
+
+class TimeLimitEventCenter {
+  public:
+    TimeLimitEventCenter() : _expirations(), _ref_counts() {}
+
+    std::vector<uint32_t> tick_dispatch(const size_t world_time) {
+        std::vector<uint32_t> expired_events;
+        while (!_expirations.empty()) {
+            if (_expirations[0].expire <= world_time) {
+                if (--_ref_counts[_expirations[0].event_id] == 0) {
+                    expired_events.push_back(_expirations[0].event_id);
+                    _ref_counts.erase(_expirations[0].event_id);
+                }
+                _expirations.pop_front();
+            } else {
+                break;
+            }
+        }
+        return expired_events;
+    }
+
+    void regist_event(const size_t world_time, uint32_t event_id) {
+        _expirations.push_back({world_time + _time_limit, event_id});
+        auto it = _ref_counts.find(event_id);
+        if (it != _ref_counts.end()) {
+            it->second += 1;
+        } else {
+            _ref_counts[event_id] = 1;
+        }
+    }
+
+  private:
+    struct EventExpiration {
+        size_t expire;
+        uint32_t event_id;
+    };
+
+    std::deque<EventExpiration> _expirations;
+
+    std::unordered_map<uint32_t, uint32_t> _ref_counts;
+
+    const size_t _time_limit{30000};
+};
 
 //! \brief A "network interface" that connects IP (the internet layer, or network layer)
 //! with Ethernet (the network access layer, or link layer).
@@ -39,6 +84,16 @@ class NetworkInterface {
 
     //! outbound queue of Ethernet frames that the NetworkInterface wants sent
     std::queue<EthernetFrame> _frames_out{};
+
+    size_t _ms_since_first_tick{0};
+
+    std::unordered_map<uint32_t, EthernetAddress> _arp_cache;
+
+    std::unordered_map<uint32_t, size_t> _last_query_timestamps;
+
+    std::unordered_map<uint32_t, std::vector<InternetDatagram>> _waiting_datagrams;
+
+    TimeLimitEventCenter _time_limit_event_center;
 
   public:
     //! \brief Construct a network interface with given Ethernet (network-access-layer) and IP (internet-layer) addresses
