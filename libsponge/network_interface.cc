@@ -51,13 +51,13 @@ void NetworkInterface::send_datagram(const InternetDatagram &dgram, const Addres
 
         _frames_out.push(frame);
     } else {
-        if (_last_query_timestamps.find(next_hop_ip) == _last_query_timestamps.end()
-            || _ms_since_first_tick - _last_query_timestamps[next_hop_ip] >= 5000) {  // broadcast arp requests
+        if (_last_query_timestamps.find(next_hop_ip) == _last_query_timestamps.end() ||
+            _ms_since_first_tick - _last_query_timestamps[next_hop_ip] >= 5000) {  // broadcast arp requests
             ARPMessage msg;
 
             msg.sender_ethernet_address = _ethernet_address;
             msg.sender_ip_address = _ip_address.ipv4_numeric();
-            msg.target_ethernet_address = {0,0,0,0,0,0};
+            msg.target_ethernet_address = {0, 0, 0, 0, 0, 0};
             msg.target_ip_address = next_hop_ip;
             msg.opcode = ARPMessage::OPCODE_REQUEST;
 
